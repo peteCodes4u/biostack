@@ -52,7 +52,7 @@ export default function PubmedSearch() {
 
   const handleBulkSave = async () => {
     if (!results || !Array.isArray(results)) return;
-    
+
     setSaving(true);
     setSaveMessage(null);
     try {
@@ -77,7 +77,7 @@ export default function PubmedSearch() {
 
   const handlePageChange = async (newPage) => {
     if (newPage < 1 || newPage > totalPages || loading) return;
-    
+
     setLoading(true);
     setError(null);
     const startIndex = (newPage - 1) * maxResults;
@@ -87,7 +87,7 @@ export default function PubmedSearch() {
       const response = await fetch('/api/pubmed/fetch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           pmids: pagePmids
         })
       });
@@ -129,14 +129,14 @@ export default function PubmedSearch() {
       const response = await fetch('/api/pubmed/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           query: validation.data.query,
           maxResults: 100 // Fetch up to 100 PMIDs to allow for some pagination
         })
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Error fetching data');
       }
@@ -154,9 +154,9 @@ export default function PubmedSearch() {
   return (
     <div className="pubmed-search-container">
       <h2>NCBI PubMed Search</h2>
-      <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <input 
-          type="text" 
+      <form className="search-form" onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <input
+          type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Enter biological terms or genes..."
@@ -168,31 +168,35 @@ export default function PubmedSearch() {
             <option key={index} value={query} />
           ))}
         </datalist>
-        <button 
-          type="submit" 
-          disabled={loading} 
-          className="btn-primary notranslate"
-        >
-          <span>{loading ? 'Searching...' : 'Search'}</span>
-        </button>
-        <button 
-          type="button" 
-          onClick={handleClear} 
-          className="btn-danger notranslate"
-        >
-          <span>Clear</span>
-        </button>
+        <div className='search-buttons'>
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary notranslate"
+          >
+            <span>{loading ? 'Searching...' : 'Search'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleClear}
+            className="btn-danger notranslate"
+          >
+            <span>Clear</span>
+          </button>
+
+        </div>
+
       </form>
 
-      <MeshSuggester 
-        searchTerm={searchTerm} 
-        onSelectMesh={handleSelectMesh} 
+      <MeshSuggester
+        searchTerm={searchTerm}
+        onSelectMesh={handleSelectMesh}
         onDateFilterApply={(newQuery) => setSearchTerm(newQuery)}
       />
 
       {error && <p className="error-text">{error}</p>}
       {saveMessage && <p className="success-text">{saveMessage}</p>}
-      
+
       {results && (
         <div className="results" style={{ marginTop: '20px' }}>
           {Array.isArray(results) && results.length > 0 && (
@@ -200,8 +204,8 @@ export default function PubmedSearch() {
               <span className="notranslate" style={{ fontWeight: 'bold', color: 'var(--text-secondary)' }}>
                 <span>Showing {((currentPage - 1) * maxResults) + 1}-{Math.min(currentPage * maxResults, totalCount)} of {totalCount.toLocaleString()} results</span>
               </span>
-              <button 
-                onClick={handleBulkSave} 
+              <button
+                onClick={handleBulkSave}
                 disabled={saving}
                 className="btn-primary notranslate"
                 style={{ padding: '8px 16px', fontWeight: '600' }}
@@ -215,9 +219,9 @@ export default function PubmedSearch() {
             <div className="citation-grid" key={`grid-${targetLanguage}`}>
               {results.length > 0 ? (
                 results.map((article, idx) => (
-                  <CitationCard 
-                    key={article.pmid || idx} 
-                    article={article} 
+                  <CitationCard
+                    key={article.pmid || idx}
+                    article={article}
                   />
                 ))
               ) : (
@@ -241,7 +245,7 @@ export default function PubmedSearch() {
               >
                 <span>Previous</span>
               </button>
-              
+
               <span className="page-indicator">
                 <span>Page {currentPage} of {totalPages.toLocaleString()}</span>
               </span>
