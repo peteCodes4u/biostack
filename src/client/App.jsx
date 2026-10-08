@@ -10,7 +10,7 @@ const healthPromise = fetch('/api/health').then(res => res.json());
 
 function HealthStatus() {
   const data = use(healthPromise);
-  return <p>System Status: {data.status} (as of {new Date(data.timestamp).toLocaleTimeString()})</p>;
+  return <p className="health-check">System Status: {data.status} (as of {new Date(data.timestamp).toLocaleTimeString()})</p>;
 }
 
 function MainDashboard() {
@@ -32,18 +32,16 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
+        <header className="app-header">
+          <div className="header-title-group">
             <h1>BioStack</h1>
             <Suspense fallback={<p>Checking system health...</p>}>
               <HealthStatus />
             </Suspense>
           </div>
 
-          <div id="header-portal" style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}></div>
-
-          <button 
-            onClick={toggleTheme} 
+          <button
+            onClick={toggleTheme}
             className="theme-toggle-btn notranslate"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             style={{
@@ -60,7 +58,7 @@ function App() {
             <span>{theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}</span>
           </button>
         </header>
-        
+
         <Routes>
           <Route path="/" element={<MainDashboard />} />
           <Route path="/viewer/:pubmedId" element={<MolstarViewer />} />
