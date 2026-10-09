@@ -415,20 +415,17 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-
 }
 
 .search-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
 }
 
 .search-buttons {
   display: flex;
-  justify-content: space-between;
+  gap: 8px;
 }
 
 /* Tablet & Desktop Viewport Style (Bigger Screens) */
