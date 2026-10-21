@@ -359,48 +359,55 @@ footer {
 }
 
 /* Pete's Changes */
-/* --- Core Main App Body Layout --- */
+/* ==========================================================================
+   1. MASTER APPLICATION CONTAINER
+   ========================================================================== */
 .main-dashboard {
-  display: grid;
-  grid-template-columns: 1fr 1fr; 
-  /* Force both tracks to perfectly sync vertical heights */
-  align-items: stretch; 
-  gap: 20px;
-  padding: 15px;
-}
-/* --- Initial Screen Layout (On Load State) --- */
-.main-dashboard.initial-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 15px;
-  align-items: stretch; /* Symmetrical side profiles on boot */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* --- Fetched States: Rearranges layout grids to give results a clear path --- */
-.main-dashboard.has-results-layout {
-  display: grid;
-  /* Upper quadrant remains dual-column split */
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 15px;
-  /* Frees voice pane from stretching all the way down */
-  align-items: start;
+/* ==========================================================================
+   2. FIXED VERTICAL HEIGHT TOOLS SECTION (ROW 1)
+   ========================================================================== */
+
+/* 
+   FIXED: This wrapper locks the side-by-side tools into a dedicated track layout, 
+   completely decoupling their heights from the results area below.
+*/
+.pubmed-search-container,
+.voice-pane {
+  flex: 1;
+  min-width: 0;
 }
 
-/* Force upper pane components to track together horizontally */
-.search-pane {
+/* On-load state: Stretches tool cards side-by-side to guarantee equal bottom margins */
+.main-dashboard:not(:has(.results)) .pubmed-search-container,
+.main-dashboard:not(:has(.results)) .voice-pane {
   display: flex;
   flex-direction: column;
 }
 
-/* --- FIXED: Restricts Voice Settings height profile to end where mesh tools wrap --- */
-.main-dashboard.has-results-layout .voice-pane {
-  position: sticky;
-  top: 15px; /* Sticks neatly and lines up right with the top row elements */
+/* Active State: Toggles tools back to natural content height ceilings when results enter */
+.main-dashboard:has(.results) .pubmed-search-container,
+.main-dashboard:has(.results) .voice-pane {
+  height: max-content;
 }
 
-/* --- Crucial Step: Make the inner settings panel expand completely --- */
+/* Strips column layout bounds from the parent React wrapper pane safely */
+.search-pane {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: 100%;
+  flex-wrap: wrap; /* Allows the full-width results to slide underneath safely */
+}
+
+/* Force the inner voice card configuration to fill out its container layout cell */
 .voice-settings-panel {
   display: flex;
   flex-direction: column;
@@ -408,30 +415,36 @@ footer {
   box-sizing: border-box;
 }
 
-/* --- FIXED: Breaks the lower results grid out into 100% true full-width blocks --- */
-.full-width-results-container {
-  /* Forces row block to cross columns 1 through the end */
-  grid-column: 1 / -1;
+/* ==========================================================================
+   3. BALANCED DUAL-COLUMN RESULTS SECTION (ROW 2)
+   ========================================================================== */
+
+/* 
+   FIXED: Positioned completely outside the tool flex boundaries, 
+   breaking free to claim full width below the locked panels.
+*/
+.pubmed-search-container .results {
   width: 100%;
-  margin-top: 25px;
+  margin-top: 24px;
   box-sizing: border-box;
+  /* Clears any float calculations to maintain perfect section separation */
+  clear: both; 
 }
 
-/*Slight utility styling to make the citations wrap symmetrically inside the grid output area */
+/* 
+   FIXED: Splits the result list into exactly two side-by-side quadrants 
+   matching your wireframe's "RESULTS COLUMN 1" and "RESULTS COLUMN 2".
+*/
 .citation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr 1fr; /* Symmetrical two-column split layout */
+  gap: 20px;
   width: 100%;
 }
 
-/* --- Inline Form Alignment --- */
-.pubmed-search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
+/* ==========================================================================
+   4. INNER ALIGNMENTS & TRANSITION CONTROLS
+   ========================================================================== */
 .pubmed-search-container h2 {
   align-self: flex-start;
   margin-bottom: 12px;
@@ -445,7 +458,6 @@ footer {
   margin-bottom: 20px;
 }
 
-/* --- Toggle / Show Open Button --- */
 .mesh-suggester-toggle-container {
   display: flex;
   justify-content: flex-start;
@@ -462,28 +474,22 @@ footer {
   transition: none !important; 
 }
 
-/* --- MeSH Suggester Interior Architecture --- */
 .mesh-suggester {
   position: relative;
   width: 100%;
-  /* Slight extra top padding to accommodate the floating button */
   padding: 30px 24px 20px 24px;
-  border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 8px;
-  background-color: var(--card-bg, #ffffff);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
-  /* Mapped to responsive theme variable backgrounds and borders */
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary); 
   color: var(--text-primary);
+  /* Fixed: Stops text colors from animating to prevent red flashes */
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* --- Floating Corner Action Button --- */
 .mesh-close-floating-btn {
   position: absolute;
-  /* Pushed tighter up and right into the absolute outermost corner boundaries */
   top: 8px;
   right: 8px;
   background: transparent;
@@ -491,50 +497,33 @@ footer {
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
-  color: var(--text-muted, #94a3b8);
   padding: 6px 10px;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Ensures it sits above backgrounds but stays isolated from content */
   z-index: 10;
-  transition: all 0.2s ease;
-  /* FIXED: Uses theme secondary text color to prevent blending into dark backgrounds */
   color: var(--text-secondary);
   transition: all 0.2s ease;
 }
 
-/* Clean micro-interactions on hover */
 .mesh-close-floating-btn:hover {
   color: var(--text-danger, #ef4444);
-  background-color: var(--bg-hover-light, #f1f5f9);
-  /* FIXED: Uses secondary theme background for hover indicator blocks */
   background-color: var(--bg-secondary);
-}
-
-.mesh-dismiss-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  padding: 4px 8px;
 }
 
 .control-panels {
   display: grid;
-  /* Symmetrical subdivide layout */
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   width: 100%;
   margin-top: 20px;
 }
 
-/* --- Custom Date Filter Rules --- */
 .date-filter-panel {
   display: flex;
   flex-direction: column;
-  padding-left: 20px
+  padding-left: 20px;
 }
 
 .date-toggle-label {
@@ -544,7 +533,6 @@ footer {
   font-weight: 500;
 }
 
-/* Hides standard browser checkbox visual while preserving standard browser logic rules */
 .hidden-checkbox {
   position: absolute;
   opacity: 0;
@@ -553,7 +541,6 @@ footer {
   margin: 0;
 }
 
-/* Enforces visual column stacking where inputs inherit matched symmetrical widths */
 .date-filter-inputs {
   display: flex;
   flex-direction: column;
@@ -588,6 +575,10 @@ footer {
   background-color: var(--accent-hover);
 }
 /* END OF PETE'S CHANGES */
+
+
+
+
 
 
 @media (max-width: 900px) {

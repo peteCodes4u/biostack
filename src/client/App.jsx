@@ -14,22 +14,19 @@ function HealthStatus() {
 }
 
 function MainDashboard() {
-  // Use state or lift the results condition to determine if data is on screen
-  const [hasResults, setHasResults] = React.useState(false);
-
   return (
-    <main className={`main-dashboard ${hasResults ? 'has-results-layout' : 'initial-layout'}`}>
-      <div className="search-pane">
-        {/* Pass down the setter to flip states seamlessly when results arrive */}
-        <PubmedSearch onResultsLoaded={(loaded) => setHasResults(loaded)} />
-      </div>
-      
-      <aside className="voice-pane">
+    <main className="main-dashboard">
+      <div className="voice-pane">
         <VoiceSettings />
-      </aside>
+      </div>
+      <div className="search-pane">
+        <PubmedSearch />
+      </div>
+
     </main>
   );
 }
+
 
 function App() {
   const { theme, toggleTheme } = useTheme();
