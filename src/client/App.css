@@ -368,21 +368,61 @@ footer {
   gap: 20px;
   padding: 15px;
 }
+/* --- Initial Screen Layout (On Load State) --- */
+.main-dashboard.initial-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 15px;
+  align-items: stretch; /* Symmetrical side profiles on boot */
+}
 
-/* --- Ensure children fill their grid tracks cleanly --- */
-.search-pane,
-.voice-pane {
+/* --- Fetched States: Rearranges layout grids to give results a clear path --- */
+.main-dashboard.has-results-layout {
+  display: grid;
+  /* Upper quadrant remains dual-column split */
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 15px;
+  /* Frees voice pane from stretching all the way down */
+  align-items: start;
+}
+
+/* Force upper pane components to track together horizontally */
+.search-pane {
   display: flex;
   flex-direction: column;
-  height: 100%;
+}
+
+/* --- FIXED: Restricts Voice Settings height profile to end where mesh tools wrap --- */
+.main-dashboard.has-results-layout .voice-pane {
+  position: sticky;
+  top: 15px; /* Sticks neatly and lines up right with the top row elements */
 }
 
 /* --- Crucial Step: Make the inner settings panel expand completely --- */
 .voice-settings-panel {
   display: flex;
   flex-direction: column;
-  height: 100%;       /* Fills the aside container completely */
+  height: 100%;
   box-sizing: border-box;
+}
+
+/* --- FIXED: Breaks the lower results grid out into 100% true full-width blocks --- */
+.full-width-results-container {
+  /* Forces row block to cross columns 1 through the end */
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 25px;
+  box-sizing: border-box;
+}
+
+/*Slight utility styling to make the citations wrap symmetrically inside the grid output area */
+.citation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  width: 100%;
 }
 
 /* --- Inline Form Alignment --- */

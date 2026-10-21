@@ -152,6 +152,8 @@ export default function PubmedSearch() {
   };
 
   return (
+    <>
+    {/* Upper Workspace Region: Houses upper tool segments */}
     <div className="pubmed-search-container">
       <h2>NCBI PubMed Search</h2>
       <form onSubmit={handleSearch} className="pubmed-inline-form">
@@ -192,8 +194,12 @@ export default function PubmedSearch() {
 
       {error && <p className="error-text">{error}</p>}
       {saveMessage && <p className="success-text">{saveMessage}</p>}
+      </div>
       
+       {/* Lower Structural Container: Breaks clear into full body width boundaries */}
+
       {results && (
+        <div className="full-width-results-container">
         <div className="results" style={{ marginTop: '20px' }}>
           {Array.isArray(results) && results.length > 0 && (
             <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -256,7 +262,8 @@ export default function PubmedSearch() {
             </nav>
           )}
         </div>
+        </div>
       )}
-    </div>
+    </>
   );
 }
