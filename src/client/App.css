@@ -358,21 +358,197 @@ footer {
   color: var(--text-secondary);
 }
 
+/* Pete's Changes */
+/* --- Core Main App Body Layout --- */
 .main-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  /* Force both tracks to perfectly sync vertical heights */
+  align-items: stretch; 
+  gap: 20px;
+  padding: 15px;
+}
+
+/* --- Ensure children fill their grid tracks cleanly --- */
+.search-pane,
+.voice-pane {
   display: flex;
-  gap: var(--space-md);
+  flex-direction: column;
+  height: 100%;
+}
+
+/* --- Crucial Step: Make the inner settings panel expand completely --- */
+.voice-settings-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;       /* Fills the aside container completely */
+  box-sizing: border-box;
+}
+
+/* --- Inline Form Alignment --- */
+.pubmed-search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pubmed-search-container h2 {
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+
+.pubmed-inline-form {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* --- Toggle / Show Open Button --- */
+.mesh-suggester-toggle-container {
+  display: flex;
+  justify-content: flex-start;
   width: 100%;
 }
 
-.search-pane {
-  flex: 1;
-  min-width: 0;
+.mesh-open-btn {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary, #333);
+  transition: none !important; 
 }
 
-.voice-pane {
-  width: 300px;
-  flex-shrink: 0;
+/* --- MeSH Suggester Interior Architecture --- */
+.mesh-suggester {
+  position: relative;
+  width: 100%;
+  /* Slight extra top padding to accommodate the floating button */
+  padding: 30px 24px 20px 24px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  background-color: var(--card-bg, #ffffff);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  /* Mapped to responsive theme variable backgrounds and borders */
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary); 
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+/* --- Floating Corner Action Button --- */
+.mesh-close-floating-btn {
+  position: absolute;
+  /* Pushed tighter up and right into the absolute outermost corner boundaries */
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-muted, #94a3b8);
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Ensures it sits above backgrounds but stays isolated from content */
+  z-index: 10;
+  transition: all 0.2s ease;
+  /* FIXED: Uses theme secondary text color to prevent blending into dark backgrounds */
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+/* Clean micro-interactions on hover */
+.mesh-close-floating-btn:hover {
+  color: var(--text-danger, #ef4444);
+  background-color: var(--bg-hover-light, #f1f5f9);
+  /* FIXED: Uses secondary theme background for hover indicator blocks */
+  background-color: var(--bg-secondary);
+}
+
+.mesh-dismiss-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 4px 8px;
+}
+
+.control-panels {
+  display: grid;
+  /* Symmetrical subdivide layout */
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* --- Custom Date Filter Rules --- */
+.date-filter-panel {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px
+}
+
+.date-toggle-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+/* Hides standard browser checkbox visual while preserving standard browser logic rules */
+.hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+/* Enforces visual column stacking where inputs inherit matched symmetrical widths */
+.date-filter-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.date-input {
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.date-apply-btn {
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: var(--accent-color);
+  color: var(--bg-primary);
+}
+
+.date-apply-btn:hover {
+  background-color: var(--accent-hover);
+}
+/* END OF PETE'S CHANGES */
+
 
 @media (max-width: 900px) {
   .main-dashboard {

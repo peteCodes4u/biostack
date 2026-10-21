@@ -154,7 +154,7 @@ export default function PubmedSearch() {
   return (
     <div className="pubmed-search-container">
       <h2>NCBI PubMed Search</h2>
-      <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+      <form onSubmit={handleSearch} className="pubmed-inline-form">
         <input 
           type="text" 
           value={searchTerm}

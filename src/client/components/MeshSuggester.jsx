@@ -69,9 +69,9 @@ function MeshSuggester({ searchTerm, onSelectMesh, onDateFilterApply }) {
   if (!isOpen) {
     return (
       <div className="mesh-suggester-toggle-container">
-        <button 
-          type="button" 
-          onClick={() => setIsOpen(true)} 
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
           className="mesh-open-btn"
         >
           🪄 Show MeSH & Date Tools
@@ -82,25 +82,24 @@ function MeshSuggester({ searchTerm, onSelectMesh, onDateFilterApply }) {
 
   return (
     <div className="mesh-suggester">
-      <div className="mesh-suggester-header">
-        <button 
-          type="button" 
-          onClick={() => setIsOpen(false)} 
-          className="mesh-dismiss-btn"
-          aria-label="Close MeSH Suggester and date panel"
-          title="Close panel"
-        >
-          ✕ Close
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => setIsOpen(false)}
+        className="mesh-close-floating-btn"
+        aria-label="Close tools panel"
+        title="Close tools panel"
+      >
+        ✕
+      </button>
 
-      <div className="control-panels" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+      {/* The structural sub-divides continue seamlessly from the top */}
+      <div className="control-panels">
         {/* --- MeSH Suggestion Panel --- */}
-        <div className="mesh-panel" style={{ flex: '1', minWidth: '250px' }}>
-          <button 
+        <div className="mesh-panel">
+          <button
             type="button"
-            onClick={handleLookupMesh} 
-            disabled={loading} 
+            onClick={handleLookupMesh}
+            disabled={loading}
             className="mesh-lookup-btn"
           >
             {loading ? '🔍 Looking up...' : '🪄 Suggest MeSH Terms'}
@@ -120,8 +119,8 @@ function MeshSuggester({ searchTerm, onSelectMesh, onDateFilterApply }) {
               <h4>Suggested MeSH Terms:</h4>
               <div className="mesh-tags">
                 {suggestions.map((term, index) => (
-                  <span 
-                    key={index} 
+                  <span
+                    key={index}
                     className="mesh-tag"
                     onClick={() => onSelectMesh(term)}
                   >
@@ -134,43 +133,44 @@ function MeshSuggester({ searchTerm, onSelectMesh, onDateFilterApply }) {
         </div>
 
         {/* --- Date Filter Panel --- */}
-        <div className="date-filter-panel" style={{ flex: '1', minWidth: '250px', paddingLeft: '20px' }}>
-          <div className="date-filter-toggle" style={{ marginBottom: '10px' }}>
-            <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500', color: 'var(--text-secondary)' }}>
-              <input 
-                type="checkbox" 
-                checked={useDateFilter} 
-                onChange={(e) => setUseDateFilter(e.target.checked)} 
+        <div className="date-filter-panel">
+          <div className="date-filter-toggle">
+            <label className="date-toggle-label">
+              <input
+                type="checkbox"
+                checked={useDateFilter}
+                onChange={(e) => setUseDateFilter(e.target.checked)}
+                className="hidden-checkbox"
               />
               📅 Do you want to add a date filter?
             </label>
           </div>
 
           {useDateFilter && (
-            <div className="date-filter-inputs" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="date-filter-inputs">
               <div className="date-input-group">
-                <input 
-                  type="text" 
-                  placeholder="Start Date (YYYY/MM/DD)" 
-                  value={startDate} 
-                  onChange={(e) => setStartDate(e.target.value)} 
+                <input
+                  type="text"
+                  placeholder="Start Date (YYYY/MM/DD)"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
                   className="date-input"
                   title="Accepted formats: YYYY, YYYY/MM, YYYY/MM/DD"
                 />
               </div>
               <div className="date-input-group">
-                <input 
-                  type="text" 
-                  placeholder="End Date (YYYY/MM/DD)" 
-                  value={endDate} 
-                  onChange={(e) => setEndDate(e.target.value)} 
+                <input
+                  type="text"
+                  placeholder="End Date (YYYY/MM/DD)"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
                   className="date-input"
                   title="Accepted formats: YYYY, YYYY/MM, YYYY/MM/DD"
                 />
               </div>
-              <button 
-                type="button" 
-                onClick={handleApplyDateFilter} 
+              <button
+                type="button"
+                onClick={handleApplyDateFilter}
                 className="date-apply-btn"
               >
                 Apply Date Range
@@ -187,7 +187,7 @@ function MeshSuggester({ searchTerm, onSelectMesh, onDateFilterApply }) {
 
       {/* --- Optional: No Suggestions Found message --- */}
       {!loading && !error && suggestions.length === 0 && searchTerm && !useDateFilter && (
-         <p className="no-suggestions-msg">No MeSH terms suggested for this search.</p>
+        <p className="no-suggestions-msg">No MeSH terms suggested for this search.</p>
       )}
     </div>
   );
