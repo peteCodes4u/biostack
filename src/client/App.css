@@ -275,7 +275,7 @@ button:disabled,
   width: 100%;
 }
 
-/* FIXED RESPONSIVE GRID BREAK: Forces results layout to 1 column on smaller tablets and mobile */
+/* RESPONSIVE GRID BREAK: Forces results layout to 1 column on smaller tablets and mobile */
 @media (max-width: 768px) {
   .citation-grid {
     grid-template-columns: 1fr;
@@ -432,7 +432,7 @@ button:disabled,
 }
 
 /* ==========================================================================
-   7. MAIN PANELS STRUCTURAL CODES (PETE'S CHANGES RE-INTEGRATED)
+   7. MAIN PANELS STRUCTURAL CODES
    ========================================================================== */
 .main-dashboard {
   display: flex;
@@ -572,7 +572,7 @@ gap: 24px;
 width: 100%;
 margin-top: 20px;
 }
-/* FIXED RESPONSIVE INTERIOR MESH BREAKDOWN: Stacks the MeSH term tags and Date settings vertically */
+/* RESPONSIVE INTERIOR MESH BREAKDOWN: Stacks the MeSH term tags and Date settings vertically */
 @media (max-width: 600px) {
 .control-panels {
 grid-template-columns: 1fr;
@@ -633,7 +633,7 @@ color: var(--bg-primary);
 .date-apply-btn:hover {
 background-color: var(--accent-hover);
 }
-/* END OF PETE'S CHANGES */
+
 /* ==========================================================================
 8. LEGACY OUTSIDE FRAMEBREAK MEDIA BREAKPOINTS
 ========================================================================== */
