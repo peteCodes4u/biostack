@@ -185,7 +185,6 @@ export default function PubmedSearch() {
           <span>Clear</span>
         </button>
       </form>
-
       <MeshSuggester 
         searchTerm={searchTerm} 
         onSelectMesh={handleSelectMesh} 
@@ -202,7 +201,17 @@ export default function PubmedSearch() {
         <div className="full-width-results-container">
         <div className="results" style={{ marginTop: '20px' }}>
           {Array.isArray(results) && results.length > 0 && (
-            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            
+            <div
+              className='notranslate results-action-toolbar' 
+              style={{
+                 marginBottom: '20px',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'space-between', 
+                 flexWrap: 'wrap',
+                 gap: '12px'
+                 }}>
               <span className="notranslate" style={{ fontWeight: 'bold', color: 'var(--text-secondary)' }}>
                 <span>Showing {((currentPage - 1) * maxResults) + 1}-{Math.min(currentPage * maxResults, totalCount)} of {totalCount.toLocaleString()} results</span>
               </span>

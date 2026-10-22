@@ -1,6 +1,9 @@
 @import './styles/tokens.css';
 @import './styles/base.css';
 
+/* ==========================================================================
+   1. GLOBAL SYSTEM VARIABLES & BASE ROOT DEFS
+   ========================================================================== */
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -81,6 +84,9 @@ body {
   width: 100%;
 }
 
+/* ==========================================================================
+   2. APP HEADER & BANNER ACTIONS
+   ========================================================================== */
 header {
   padding: var(--space-sm) var(--space-md);
   background-color: var(--bg-secondary);
@@ -89,6 +95,54 @@ header {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Mobile Viewport Style (Default Layout) */
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  text-align: center;
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-title-group h1 {
+  margin: 0;
+  line-height: 1;
+}
+
+.header-title-group .health-check {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #666);
+}
+
+/* Tablet & Desktop Viewport Style (Bigger Screens) */
+@media (min-width: 768px) {
+  .app-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    gap: 0;
+  }
+
+  .header-title-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+/* ==========================================================================
+   3. SEARCH CONTAINER & FORMS
+   ========================================================================== */
 .search-section {
   background-color: var(--bg-secondary);
   padding: var(--space-md);
@@ -131,7 +185,11 @@ input {
   }
 }
 
-button, .btn-primary {
+/* ==========================================================================
+   4. SYSTEM BUTTON ELEMENTS
+   ========================================================================== */
+button,
+.btn-primary {
   padding: 0.8rem 1.5rem;
   border-radius: 6px;
   border: none;
@@ -145,11 +203,13 @@ button, .btn-primary {
   transition: all 0.25s;
 }
 
-button:hover, .btn-primary:hover {
+button:hover,
+.btn-primary:hover {
   background-color: var(--accent-hover);
 }
 
-button:disabled, .btn-primary:disabled {
+button:disabled,
+.btn-primary:disabled {
   background-color: var(--border-color);
   color: var(--text-secondary);
   cursor: not-allowed;
@@ -174,6 +234,29 @@ button:disabled, .btn-primary:disabled {
   color: white;
 }
 
+.btn-save {
+  align-self: flex-start;
+  background-color: #38a169;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme='dark'] .btn-save {
+  background-color: #059669;
+}
+
+/* ==========================================================================
+   5. RESULTS VIEW & CITATION INFRASTRUCTURE
+   ========================================================================== */
 .results {
   text-align: left;
   background: var(--bg-secondary);
@@ -183,17 +266,20 @@ button:disabled, .btn-primary:disabled {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-footer {
-  margin-top: var(--space-lg);
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-}
-
 .citation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(clamp(280px, 100%, 400px), 1fr));
+  /* Symmetrical two-column grid split layout on larger desktops */
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-md);
   align-items: start;
+  width: 100%;
+}
+
+/* FIXED RESPONSIVE GRID BREAK: Forces results layout to 1 column on smaller tablets and mobile */
+@media (max-width: 768px) {
+  .citation-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .citation-card {
@@ -204,7 +290,7 @@ footer {
   border-radius: 8px;
   padding: var(--space-md);
   background-color: var(--bg-primary);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -246,26 +332,6 @@ footer {
   padding-top: var(--space-md);
 }
 
-.btn-save {
-  align-self: flex-start;
-  background-color: #38a169;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  cursor: pointer;
-  min-height: var(--touch-target-min);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-[data-theme='dark'] .btn-save {
-  background-color: #059669;
-}
-
 .citation-card details {
   width: 100%;
 }
@@ -298,7 +364,9 @@ footer {
   color: var(--text-primary);
 }
 
-/* Pagination Control Styles */
+/* ==========================================================================
+   6. PAGINATION CONTROLS
+   ========================================================================== */
 .pagination-control {
   display: flex;
   justify-content: center;
@@ -317,7 +385,8 @@ footer {
   }
 }
 
-.prev-button, .next-button {
+.prev-button,
+.next-button {
   padding: 10px 20px;
   border-radius: 6px;
   font-weight: 600;
@@ -333,7 +402,9 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .prev-button, .next-button {
+
+  .prev-button,
+  .next-button {
     padding: 8px 16px;
     font-size: var(--font-size-sm);
     flex: 1;
@@ -342,11 +413,13 @@ footer {
   }
 }
 
-.prev-button:hover:not(:disabled), .next-button:hover:not(:disabled) {
+.prev-button:hover:not(:disabled),
+.next-button:hover:not(:disabled) {
   background-color: var(--accent-hover);
 }
 
-.prev-button:disabled, .next-button:disabled {
+.prev-button:disabled,
+.next-button:disabled {
   background-color: var(--bg-secondary);
   color: var(--text-secondary);
   cursor: not-allowed;
@@ -358,9 +431,8 @@ footer {
   color: var(--text-secondary);
 }
 
-/* Pete's Changes */
 /* ==========================================================================
-   1. MASTER APPLICATION CONTAINER
+   7. MAIN PANELS STRUCTURAL CODES (PETE'S CHANGES RE-INTEGRATED)
    ========================================================================== */
 .main-dashboard {
   display: flex;
@@ -371,287 +443,210 @@ footer {
   width: 100%;
 }
 
-/* ==========================================================================
-   2. FIXED VERTICAL HEIGHT TOOLS SECTION (ROW 1)
-   ========================================================================== */
-
-/* 
-   FIXED: This wrapper locks the side-by-side tools into a dedicated track layout, 
-   completely decoupling their heights from the results area below.
-*/
-.pubmed-search-container,
 .voice-pane {
-  flex: 1;
-  min-width: 0;
-}
-
-/* On-load state: Stretches tool cards side-by-side to guarantee equal bottom margins */
-.main-dashboard:not(:has(.results)) .pubmed-search-container,
-.main-dashboard:not(:has(.results)) .voice-pane {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Active State: Toggles tools back to natural content height ceilings when results enter */
-.main-dashboard:has(.results) .pubmed-search-container,
-.main-dashboard:has(.results) .voice-pane {
-  height: max-content;
-}
-
-/* Strips column layout bounds from the parent React wrapper pane safely */
-.search-pane {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
   width: 100%;
-  flex-wrap: wrap; /* Allows the full-width results to slide underneath safely */
 }
 
-/* Force the inner voice card configuration to fill out its container layout cell */
 .voice-settings-panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-/* ==========================================================================
-   3. BALANCED DUAL-COLUMN RESULTS SECTION (ROW 2)
-   ========================================================================== */
-
-/* 
-   FIXED: Positioned completely outside the tool flex boundaries, 
-   breaking free to claim full width below the locked panels.
-*/
-.pubmed-search-container .results {
-  width: 100%;
-  margin-top: 24px;
-  box-sizing: border-box;
-  /* Clears any float calculations to maintain perfect section separation */
-  clear: both; 
-}
-
-/* 
-   FIXED: Splits the result list into exactly two side-by-side quadrants 
-   matching your wireframe's "RESULTS COLUMN 1" and "RESULTS COLUMN 2".
-*/
-.citation-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Symmetrical two-column split layout */
-  gap: 20px;
-  width: 100%;
-}
-
-/* ==========================================================================
-   4. INNER ALIGNMENTS & TRANSITION CONTROLS
-   ========================================================================== */
-.pubmed-search-container h2 {
-  align-self: flex-start;
-  margin-bottom: 12px;
-}
-
-.pubmed-inline-form {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.mesh-suggester-toggle-container {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.mesh-open-btn {
-  background: none;
-  border: none;
-  padding: 8px 0;
-  cursor: pointer;
-  font-weight: 600;
-  color: var(--text-primary, #333);
-  transition: none !important; 
-}
-
-.mesh-suggester {
   position: relative;
   width: 100%;
-  padding: 30px 24px 20px 24px;
+  padding: 24px 20px 20px 20px;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-primary); 
-  color: var(--text-primary);
-  /* Fixed: Stops text colors from animating to prevent red flashes */
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+.voice-close-floating-btn {
+position: absolute;
+top: 8px;
+right: 8px;
+background: transparent;
+border: none;
+cursor: pointer;
+font-size: 14px;
+font-weight: bold;
+padding: 6px 10px;
+border-radius: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 10;
+color: var(--text-secondary);
+transition: all 0.2s ease;
+}
+.voice-close-floating-btn:hover {
+color: var(--text-danger, #ef4444);
+background-color: var(--bg-secondary);
+}
+.voice-pane-toggle-container {
+display: flex;
+justify-content: flex-start;
+width: 100%;
+}
+.voice-open-btn {
+background: none;
+border: none;
+padding: 4px 0;
+cursor: pointer;
+font-weight: 600;
+color: var(--text-primary);
+transition: none !important;
+}
+.search-pane {
+width: 100%;
+}
+.pubmed-search-container {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+width: 100%;
+}
+.pubmed-search-container h2 {
+align-self: flex-start;
+margin-bottom: 12px;
+}
+.pubmed-inline-form {
+display: flex;
+justify-content: flex-start;
+gap: 10px;
+width: 100%;
+margin-bottom: 20px;
+}
+.mesh-suggester-toggle-container {
+display: flex;
+justify-content: flex-start;
+width: 100%;
+}
+.mesh-open-btn {
+background: none;
+border: none;
+padding: 8px 0;
+cursor: pointer;
+font-weight: 600;
+color: var(--text-primary);
+transition: none !important;
+}
+.mesh-suggester {
+position: relative;
+width: 100%;
+padding: 30px 24px 20px 24px;
+border-radius: 8px;
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+box-sizing: border-box;
+border: 1px solid var(--border-color);
+background-color: var(--bg-secondary);
+color: var(--text-primary);
+transition: background-color 0.3s ease, border-color 0.3s ease;
+}
 .mesh-close-floating-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 6px 10px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
+position: absolute;
+top: 8px;
+right: 8px;
+background: transparent;
+border: none;
+cursor: pointer;
+font-size: 14px;
+font-weight: bold;
+padding: 6px 10px;
+border-radius: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 10;
+color: var(--text-secondary);
+transition: all 0.2s ease;
 }
-
 .mesh-close-floating-btn:hover {
-  color: var(--text-danger, #ef4444);
-  background-color: var(--bg-secondary);
+color: var(--text-danger, #ef4444);
+background-color: var(--bg-secondary);
 }
-
 .control-panels {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  width: 100%;
-  margin-top: 20px;
+display: grid;
+/* Balanced split columns on desktops/tablets */
+grid-template-columns: 1fr 1fr;
+gap: 24px;
+width: 100%;
+margin-top: 20px;
 }
-
+/* FIXED RESPONSIVE INTERIOR MESH BREAKDOWN: Stacks the MeSH term tags and Date settings vertically */
+@media (max-width: 600px) {
+.control-panels {
+grid-template-columns: 1fr;
+gap: 20px;
+}
+}
 .date-filter-panel {
-  display: flex;
-  flex-direction: column;
-  padding-left: 20px;
+display: flex;
+flex-direction: column;
+padding-left: 20px;
 }
-
+/* Clear out left indentation padding on small views to prevent structural squishing */
+@media (max-width: 600px) {
+.date-filter-panel {
+padding-left: 0;
+}
+}
 .date-toggle-label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
+cursor: pointer;
+display: flex;
+align-items: center;
+font-weight: 500;
 }
-
 .hidden-checkbox {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
+position: absolute;
+opacity: 0;
+width: 0;
+height: 0;
+margin: 0;
 }
-
 .date-filter-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  margin-top: 10px;
+display: flex;
+flex-direction: column;
+gap: 8px;
+width: 100%;
+margin-top: 10px;
 }
-
 .date-input {
-  width: 100% !important;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+width: 100% !important;
+box-sizing: border-box;
+padding: 8px 12px;
+border-radius: 6px;
+background-color: var(--bg-secondary);
+border: 1px solid var(--border-color);
+color: var(--text-primary);
 }
-
 .date-apply-btn {
-  width: 100% !important;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  background-color: var(--accent-color);
-  color: var(--bg-primary);
+width: 100% !important;
+box-sizing: border-box;
+padding: 8px 12px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-weight: 600;
+background-color: var(--accent-color);
+color: var(--bg-primary);
 }
-
 .date-apply-btn:hover {
-  background-color: var(--accent-hover);
+background-color: var(--accent-hover);
 }
 /* END OF PETE'S CHANGES */
-
-
-
-
-
-
+/* ==========================================================================
+8. LEGACY OUTSIDE FRAMEBREAK MEDIA BREAKPOINTS
+========================================================================== */
 @media (max-width: 900px) {
-  .main-dashboard {
-    flex-direction: column;
-  }
-  .voice-pane {
-    width: 100%;
-  }
+.main-dashboard {
+flex-direction: column;
 }
-
-/* Mobile Viewport Style (Default) */
-.app-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  text-align: center;
+.voice-pane {
+width: 100%;
 }
-
-.header-title-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
 }
-
-.header-title-group h1 {
-  margin: 0;
-  line-height: 1;
+footer {
+margin-top: var(--space-lg);
+font-size: var(--font-size-xs);
+color: var(--text-secondary);
 }
-
-.header-title-group .health-check {
-  margin: 0;
-  font-size: 0.9rem; /* Clean subtle indicator sizing */
-  color: var(--text-secondary, #666);
-}
-
-.pubmed-search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.search-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.search-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-/* Tablet & Desktop Viewport Style (Bigger Screens) */
-@media (min-width: 768px) {
-  .app-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-    gap: 0;
-  }
-
-
-  .header-title-group {
-    flex-direction: column; 
-    align-items: flex-start; 
-    gap: 16px;
-  }
-}
-
-
-
