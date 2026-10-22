@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNativeSpeech } from '../hooks/useNativeSpeech';
-import { getActiveLanguage } from '../utils/languageDetection'; 
+import { getActiveLanguage } from '../utils/languageDetection';
 
 /**
  * AbstractView provides a UI for reading scientific abstracts.
@@ -18,11 +18,6 @@ const AbstractView = ({ article, onSave, saving }) => {
   const [structureData, setStructureData] = useState(null);
 
   // 1. Check for structural data availability ONLY when needed
-  // We can use the 'open' state of the parent <details> or just trigger it on mount
-  // Since AbstractView is inside <details>, it mounts when the user first expands it?
-  // Actually, in CitationCard it's always in the JSX.
-  // Let's use an Intersection Observer or just a "load" trigger.
-  // For now, let's just add a small random delay to stagger the initial burst
   useEffect(() => {
     if (pubmedId) {
       const staggeredDelay = Math.random() * 2000; // 0-2 seconds delay
@@ -127,6 +122,10 @@ const AbstractView = ({ article, onSave, saving }) => {
           margin: 16px 0;
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
           transition: background 0.3s ease, border-color 0.3s ease;
+          /* FIXED: Forces padding calculations to sit strictly inside width boundaries */
+          width: 100%;
+          box-sizing: border-box;
+          overflow-wrap: break-word; /* Safeguards raw data strings from breaking layout bounds */
         }
 
         .abstract-header {
@@ -142,6 +141,7 @@ const AbstractView = ({ article, onSave, saving }) => {
           font-size: 1.25rem;
           font-weight: 600;
           line-height: 1.4;
+          text-align: left;
         }
 
         .speech-controls {
@@ -155,6 +155,7 @@ const AbstractView = ({ article, onSave, saving }) => {
         .speech-btn {
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 8px;
           padding: 8px 16px;
           border-radius: 6px;
@@ -164,6 +165,8 @@ const AbstractView = ({ article, onSave, saving }) => {
           border: none;
           transition: opacity 0.2s;
           white-space: nowrap;
+          box-sizing: border-box;
+          width: 100%; /* Guarantees uniform button stretching in column layout fields */
         }
 
         .speech-btn.viewer {
@@ -195,10 +198,51 @@ const AbstractView = ({ article, onSave, saving }) => {
           font-size: 1rem;
           opacity: 0.9;
           white-space: pre-wrap;
+          text-align: left;
         }
 
         .icon {
           font-size: 12px;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE MOBILE BREAKPOINTS
+           ========================================================================== */
+        @media (max-width: 600px) {
+          .abstract-card {
+            padding: 16px; /* Decreases heavy side gaps to optimize mobile workspace pixels */
+          }
+
+          .abstract-header {
+            /* FIXED: Stacks the article title cleanly on top of the speech buttons */
+            flex-direction: column;
+            align-items: stretch;
+            gap: 16px;
+          }
+
+          .speech-controls {
+            /* FIXED: Reconfigures controls from an rigid column stack into an adaptive row wrap grid */
+            flex-direction: row;
+            flex-wrap: wrap; /* Allows actions to wrap gracefully on smaller devices */
+            width: 100%;
+            min-width: 0;   /* Removes desktop-first rigid minimum bounds constraints */
+            gap: 8px;
+          }
+
+          .speech-btn {
+            /* Evenly spaces action components across dual rows when wrapped */
+            flex: 1 1 calc(50% - 4px);
+            min-width: 120px;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .speech-btn {
+            /* Forces single button blocks to stretch full wide on compact screens */
+            flex: 1 1 100%;
+          }
         }
       `}</style>
     </section>

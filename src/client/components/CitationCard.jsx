@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Tooltip from './Tooltip';
 import AbstractView from './AbstractView';
 import { getActiveLanguage } from '../utils/languageDetection';
+import VoiceSettings from './VoiceSettings';
 
 export default function CitationCard({ article }) {
   const {
@@ -78,6 +79,9 @@ export default function CitationCard({ article }) {
                 onSave={handleSave}
                 saving={saving}
               />
+            </div>
+            <div>
+              <VoiceSettings/>
             </div>
           </details>
         )}
