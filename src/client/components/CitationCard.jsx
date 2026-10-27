@@ -80,9 +80,6 @@ export default function CitationCard({ article }) {
                 saving={saving}
               />
             </div>
-            <div>
-              <VoiceSettings/>
-            </div>
           </details>
         )}
       </div>

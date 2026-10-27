@@ -8,12 +8,12 @@ import './VoiceSettings.css';
  * native speech synthesis and integrates Google Translate for 
  * dashboard-wide translation, maintaining the Biostack project aesthetic.
  */
-const VoiceSettings = () => {
+const VoiceSettings = ({ initialOpen = false }) => {
   const { voices, selectedVoiceURI, setSelectedVoiceURI, speak } = useNativeSpeech();
   const [isTranslateDialogOpen, setIsTranslateDialogOpen] = useState(false);
   const [fromLang, setFromLang] = useState('en');
   const [toLang, setToLang] = useState('es');
-  const [isPaneOpen, setIsPaneOpen] = React.useState(true);
+  const [isPaneOpen, setIsPaneOpen] = useState(initialOpen);
 
   useEffect(() => {
     // 1. Programmatic Script Injection

@@ -17,7 +17,7 @@ function MainDashboard() {
   return (
     <main className="main-dashboard">
       <div className="voice-pane">
-        <VoiceSettings />
+        <VoiceSettings initialOpen={false}/>
       </div>
       <div className="search-pane">
         <PubmedSearch />

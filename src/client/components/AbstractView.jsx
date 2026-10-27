@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNativeSpeech } from '../hooks/useNativeSpeech';
 import { getActiveLanguage } from '../utils/languageDetection';
+import VoiceSettings from '../components/VoiceSettings';
 
 /**
  * AbstractView provides a UI for reading scientific abstracts.
@@ -107,7 +108,7 @@ const AbstractView = ({ article, onSave, saving }) => {
           )}
         </div>
       </div>
-
+      <VoiceSettings initialOpen={false}/>
       <div className="abstract-body" key={`body-${targetLanguage}`} ref={contentRef}>
         <p><span>{abstractText}</span></p>
       </div>
