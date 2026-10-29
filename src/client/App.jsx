@@ -1,6 +1,6 @@
 import React, { use, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PubmedSearch from './PubmedSearch';
+import PubmedSearch from './components/PubmedSearch';
 import MolstarViewer from './components/MolstarViewer';
 import VoiceSettings from './components/VoiceSettings';
 import { useTheme } from './hooks/ThemeContext';

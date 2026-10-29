@@ -17,16 +17,16 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* Light Mode Variables */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --border-color: #e2e8f0;
-  --accent-color: #3b82f6;
-  --accent-hover: #2563eb;
-  --danger-color: #ef4444;
-  --danger-bg: #fee2e2;
-  --danger-border: #fca5a5;
+  --bg-primary: #fcfbf9;     /* Soft paper off-white (drastically cuts glare) */
+  --bg-secondary: #f4f1eb;   /* Slightly deeper warm cream for panels/sidebars */
+  --text-primary: #1c1a17;   /* Soft charcoal (easier on eyes than pure dark slate) */
+  --text-secondary: #5c5850; /* Compliant mid-tone grey for secondary text (4.6:1 contrast) */
+  --border-color: #e5dfd3;   /* Soft organic border separation line */
+  --accent-color: #1d61d6;   /* Accessible, deeper eye-friendly medical blue */
+  --accent-hover: #134db3;   /* High-contrast hover blue */
+  --danger-color: #c92a2a;   /* Deeper accessible warning red */
+  --danger-bg: #fdf2f2;      /* Soft tinted light alert surface */
+  --danger-border: #f8b4b4;  /* Muted red boundary outline */
 }
 
 [data-theme='dark'] {
@@ -432,19 +432,23 @@ button:disabled,
 }
 
 /* ==========================================================================
-   7. MAIN PANELS STRUCTURAL CODES
+   7. MAIN PANELS STRUCTURAL CODES (REVISED FOR MAX-WIDTH INPUT ROW)
    ========================================================================== */
 .main-dashboard {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 20px;
-  box-sizing: border-box;
-  width: 100%;
+  padding: 12px;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
 }
 
 .voice-pane {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .voice-settings-panel {
@@ -453,7 +457,7 @@ button:disabled,
   padding: 24px 20px 20px 20px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary); 
   color: var(--text-primary);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
@@ -461,178 +465,228 @@ button:disabled,
 }
 
 .voice-close-floating-btn {
-position: absolute;
-top: 8px;
-right: 8px;
-background: transparent;
-border: none;
-cursor: pointer;
-font-size: 14px;
-font-weight: bold;
-padding: 6px 10px;
-border-radius: 4px;
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 10;
-color: var(--text-secondary);
-transition: all 0.2s ease;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
 }
+
 .voice-close-floating-btn:hover {
-color: var(--text-danger, #ef4444);
-background-color: var(--bg-secondary);
+  color: var(--text-danger, #ef4444);
+  background-color: var(--bg-secondary);
 }
+
 .voice-pane-toggle-container {
-display: flex;
-justify-content: flex-start;
-width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
+
 .voice-open-btn {
-background: none;
-border: none;
-padding: 4px 10px;
-cursor: pointer;
-font-weight: 600;
-color: var(--text-primary);
-transition: none !important;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: none !important;
 }
+
 .search-pane {
-width: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
+
 .pubmed-search-container {
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Forces form children to span edge-to-edge horizontally */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
+
 .pubmed-search-container h2 {
-align-self: flex-start;
-margin-bottom: 12px;
+  align-self: flex-start;
+  margin-bottom: 12px;
 }
+
+/* 
+   FIXED SEARCH FORM: Stays on a single line row while dynamically 
+   stretching the text box to take up all empty horizontal viewport body width.
+*/
 .pubmed-inline-form {
-display: flex;
-justify-content: flex-start;
-gap: 10px;
-width: 100%;
-margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
 }
+
+/* FIXED TEXT BOX: Overrides global 300px clamp restrictions, spanning edge-to-edge */
+.pubmed-inline-form input.flex-grow {
+  flex: 1 1 auto;      /* Automatically consumes 100% of left-over row dimensions */
+  width: 100%;
+  max-width: none !important; /* FIXED: Destroys old legacy 300px restrictions from section 3 */
+  min-width: 0;        /* Allows inputs to scale and resize down cleanly on phones */
+  box-sizing: border-box;
+}
+
+.pubmed-inline-form datalist {
+  display: none !important;
+}
+
+.pubmed-inline-form button.btn-primary,
+.pubmed-inline-form button.btn-danger {
+  flex: 0 0 auto;       /* Prevents buttons from squishing or altering dimensions */
+  white-space: nowrap;  /* Prevents search button text strings from breaking into two rows */
+}
+
 .mesh-suggester-toggle-container {
-display: flex;
-justify-content: flex-start;
-width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
+
 .mesh-open-btn {
-background: none;
-border: none;
-padding: 8px 0;
-cursor: pointer;
-font-weight: 600;
-color: var(--text-primary);
-transition: none !important;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: none !important; 
 }
+
 .mesh-suggester {
-position: relative;
-width: 100%;
-padding: 30px 24px 20px 24px;
-border-radius: 8px;
-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-box-sizing: border-box;
-border: 1px solid var(--border-color);
-background-color: var(--bg-secondary);
-color: var(--text-primary);
-transition: background-color 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  width: 100%;
+  padding: 30px 24px 20px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary); 
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
 .mesh-close-floating-btn {
-position: absolute;
-top: 8px;
-right: 8px;
-background: transparent;
-border: none;
-cursor: pointer;
-font-size: 14px;
-font-weight: bold;
-padding: 6px 10px;
-border-radius: 4px;
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 10;
-color: var(--text-secondary);
-transition: all 0.2s ease;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
 }
+
 .mesh-close-floating-btn:hover {
-color: var(--text-danger, #ef4444);
-background-color: var(--bg-secondary);
+  color: var(--text-danger, #ef4444);
+  background-color: var(--bg-secondary);
 }
+
 .control-panels {
-display: grid;
-/* Balanced split columns on desktops/tablets */
-grid-template-columns: 1fr 1fr;
-gap: 24px;
-width: 100%;
-margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  margin-top: 20px;
 }
-/* RESPONSIVE INTERIOR MESH BREAKDOWN: Stacks the MeSH term tags and Date settings vertically */
+
 @media (max-width: 600px) {
-.control-panels {
-grid-template-columns: 1fr;
-gap: 20px;
+  .control-panels {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
 }
-}
+
 .date-filter-panel {
-display: flex;
-flex-direction: column;
-padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
 }
-/* Clear out left indentation padding on small views to prevent structural squishing */
+
 @media (max-width: 600px) {
-.date-filter-panel {
-padding-left: 0;
+  .date-filter-panel {
+    padding-left: 0 !important;
+  }
 }
-}
+
 .date-toggle-label {
-cursor: pointer;
-display: flex;
-align-items: center;
-font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
 }
+
 .hidden-checkbox {
-position: absolute;
-opacity: 0;
-width: 0;
-height: 0;
-margin: 0;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
 }
+
 .date-filter-inputs {
-display: flex;
-flex-direction: column;
-gap: 8px;
-width: 100%;
-margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
 }
+
 .date-input {
-width: 100% !important;
-box-sizing: border-box;
-padding: 8px 12px;
-border-radius: 6px;
-background-color: var(--bg-secondary);
-border: 1px solid var(--border-color);
-color: var(--text-primary);
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
+
 .date-apply-btn {
-width: 100% !important;
-box-sizing: border-box;
-padding: 8px 12px;
-border: none;
-border-radius: 6px;
-cursor: pointer;
-font-weight: 600;
-background-color: var(--accent-color);
-color: var(--bg-primary);
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: var(--accent-color);
+  color: var(--bg-primary);
 }
+
 .date-apply-btn:hover {
-background-color: var(--accent-hover);
+  background-color: var(--accent-hover);
 }
+
 
 /* ==========================================================================
 8. LEGACY OUTSIDE FRAMEBREAK MEDIA BREAKPOINTS
