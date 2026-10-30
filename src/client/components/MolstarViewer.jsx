@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context';
 import { DefaultPluginUISpec } from 'molstar/lib/mol-plugin-ui/spec';
@@ -16,7 +15,7 @@ import './MolstarViewer.css';
  * Full Mol* Viewer with UI Panels
  * Integrated as a native React component for React 19 compatibility.
  * Theme-aware background synchronization via PluginCommands.
- * UI Controls are portaled into the global application header.
+ * Inline control structures stack cleanly above the 3D canvas viewport frame.
  */
 export default function MolstarViewer() {
   const { pubmedId, pmid } = useParams();
@@ -215,75 +214,92 @@ export default function MolstarViewer() {
     }
   };
 
-  // Add this small helper inside MolstarViewer to capture form submisson events gracefully
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    if (searchId.trim() && !loading) {
-      loadStructure(searchId);
-    }
-  };
-
   return (
-    <section className="molstar-app-container">
-      {createPortal(
-        <div className="viewer-header-portal-content">
-          <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <button 
-              onClick={handleReturn}
-              className="return-btn"
-              title="Return to Search"
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'inherit', 
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '5px'
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-            </button>
-            
-            {/* 
-              Form element wrapper ensures the search bar always mounts immediately.
-              It binds the input to the state and captures Enter key triggers flawlessly.
-            */}
-            <form onSubmit={handleFormSubmit} className="search-bar" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <input 
-                type="text" 
-                value={searchId}
-                onChange={(e) => setSearchId(e.target.value)}
-                placeholder="UniProt Accession (e.g., O88844, P04637)"
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  border: '1px solid var(--border-color, #cbd5e1)',
-                  background: 'var(--bg-primary, #ffffff)',
-                  color: 'var(--text-primary, #0f172a)'
-                }}
-              />
-              <button 
-                type="submit" 
-                disabled={loading || !searchId.trim()}
-                className="fetch-btn"
-              >
-                {loading ? 'Fetching...' : 'Fetch Structure'}
-              </button>
-            </form>
-            <p className={`status-text ${status.startsWith('Error') ? 'error' : ''}`}>{status}</p>
-          </div>
-        </div>,
-        document.getElementById('header-portal') || document.body
-      )}
+    <section 
+      className="molstar-app-container" 
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        width: '100%', 
+        height: '100%',
+        boxSizing: 'border-box' 
+      }}
+    >
+      {/* 
+        NO MORE PORTALS: The search components are structured inline here. 
+        This keeps the main layout header completely unbothered on the dashboard, 
+        and guarantees the input bars render ABOVE the image in a new tab view window!
+      */}
+      <div 
+        className="viewer-header-inline-controls" 
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          padding: '12px 16px',
+          background: 'var(--bg-secondary, #f4f1eb)',
+          borderBottom: '1px solid var(--border-color, #e5dfd3)',
+          flexShrink: 0,
+          width: '100%',
+          boxSizing: 'border-box'
+        }}
+      >
+        <button 
+          onClick={handleReturn}
+          className="return-btn"
+          title="Return to Search"
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            color: 'inherit', 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px'
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        
+        <div className="search-bar" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <input 
+            type="text" 
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            placeholder="UniProt Accession (e.g., O88844)"
+            style={{
+              padding: '6px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--border-color)',
+              background: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
+              fontSize: '14px',
+              maxWidth: '280px'
+            }}
+          />
+          <button 
+            onClick={() => loadStructure(searchId)} 
+            disabled={loading || !searchId.trim()}
+            className="fetch-btn"
+            style={{
+              padding: '6px 14px',
+              fontSize: '14px',
+              fontWeight: '500'
+            }}
+          >
+            {loading ? 'Fetching...' : 'Fetch Structure'}
+          </button>
+        </div>
+        <p className={`status-text ${status.startsWith('Error') ? 'error' : ''}`} style={{ margin: 0, fontSize: '13px' }}>{status}</p>
+      </div>
 
+      {/* 3D Structure Viewer Frame rendering right below the input line */}
       <div className={`molstar-wrapper msp-theme-${theme}`} style={{ flexGrow: 1, position: 'relative', width: '100%', height: '100%' }}>
         {plugin && <Plugin plugin={plugin} />}
       </div>
     </section>
   );
 }
-

@@ -12,18 +12,15 @@ function HealthStatus() {
   return <p className="health-check">System Status: {data.status} (as of {new Date(data.timestamp).toLocaleTimeString()})</p>;
 }
 
-// 1. Extracted Toolbar to easily control when to show header inputs vs default titles
 function HeaderControls({ show3dSearch, onToggle3d }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="app-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px' }}>
       <div className="header-title-group" style={{ display: 'flex', alignItems: 'center', gap: '24px', flex: 1 }}>
-        {/* If the dashboard viewer pane is active, show the search target slot right here */}
         {show3dSearch ? (
-          <div id="header-portal" style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            {/* The Portal target is now guaranteed to exist inside the rendering lifecycle */}
-          </div>
+          /* Forces the portal mounting slot to stretch 100% across the top row block layout */
+          <div id="header-portal" style={{ display: 'flex', width: '100%', flexDirection: 'row', alignItems: 'center' }} />
         ) : (
           <>
             <h1>BioStack</h1>
@@ -34,11 +31,10 @@ function HeaderControls({ show3dSearch, onToggle3d }) {
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexShrink: 0 }}>
         <button
           onClick={toggleTheme}
           className="theme-toggle-btn notranslate"
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           style={{
             padding: '8px 12px',
             borderRadius: '6px',
@@ -56,18 +52,35 @@ function HeaderControls({ show3dSearch, onToggle3d }) {
   );
 }
 
-function MainDashboard({ show3dSearch, onToggle3d }) {
+
+function MainDashboard() {
+  const [show3dSearch, setShow3dSearch] = useState(false);
+  const [isReadyToRender, setIsReadyToRender] = useState(false);
+
+  // Safely manage structural geometry layout initialization
+  const handleToggleViewer = () => {
+    if (!show3dSearch) {
+      setShow3dSearch(true);
+      // Wait exactly 1 frame pass (50ms) for the browser to render the wrapper container dimensions
+      setTimeout(() => {
+        setIsReadyToRender(true);
+      }, 50);
+    } else {
+      setIsReadyToRender(false);
+      setShow3dSearch(false);
+    }
+  };
+
   return (
     <main className="main-dashboard">
       <div className="voice-pane">
         <VoiceSettings initialOpen={false}/>
       </div>
       
-      <div style={{ margin: '15px 0', textAlign: 'left' }}>
-        {/* The Action Button inside the dashboard */}
+      <div style={{ margin: '20px 0', textAlign: 'left' }}>
         <button
           className="search-3d-global-btn"
-          onClick={onToggle3d}
+          onClick={handleToggleViewer}
           style={{
             padding: '10px 18px',
             backgroundColor: show3dSearch ? '#dc2626' : '#7c3aed',
@@ -75,10 +88,16 @@ function MainDashboard({ show3dSearch, onToggle3d }) {
             border: 'none',
             borderRadius: '8px',
             cursor: 'pointer',
-            fontWeight: '600'
+            fontWeight: '600',
+            fontSize: '0.9rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.2s ease'
           }}
         >
-          {show3dSearch ? '❌ Close 3D Viewer' : '🧬 Search 3D structures'}
+          <span>{show3dSearch ? '❌ Close 3D Search' : '🧬 Search 3D structures'}</span>
         </button>
 
         {show3dSearch && (
@@ -89,10 +108,19 @@ function MainDashboard({ show3dSearch, onToggle3d }) {
               border: '1px solid var(--border-color, #e5e7eb)',
               borderRadius: '12px',
               height: '550px',
-              overflow: 'hidden'
+              width: '100%',         // Guarantees layout dimensions exist before initialization
+              minWidth: '320px',
+              position: 'relative',
+              overflow: 'hidden',
+              backgroundColor: 'var(--bg-secondary, #ffffff)'
             }}
           >
-            <MolstarViewer />
+            {/* 
+              By conditionally delaying the viewer initialization, the parent container 
+              is guaranteed to have its full height and width metrics available, 
+              forcing the 3D canvas to scale up and become visible immediately.
+            */}
+            {isReadyToRender ? <MolstarViewer /> : <div style={{ padding: '20px', color: 'var(--text-secondary)' }}>Initializing 3D Viewport...</div>}
           </div>
         )}
       </div>
@@ -104,21 +132,42 @@ function MainDashboard({ show3dSearch, onToggle3d }) {
   );
 }
 
+
 function App() {
-  // Lift visibility state up to the parent shell so header and dashboard stay synced
-  const [show3dSearch, setShow3dSearch] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <Router>
       <div className="app-container">
-        
-        {/* Pass the visibility state down so the header handles layout updates */}
-        <HeaderControls show3dSearch={show3dSearch} onToggle3d={() => setShow3dSearch(!show3dSearch)} />
+        <header className="app-header">
+          <div className="header-title-group">
+            <h1>BioStack</h1>
+            <Suspense fallback={<p>Checking system health...</p>}>
+              <HealthStatus />
+            </Suspense>
+          </div>
+
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle-btn notranslate"
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--border-color)',
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <span>{theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}</span>
+          </button>
+        </header>
 
         <Routes>
-          <Route path="/" element={
-            <MainDashboard show3dSearch={show3dSearch} onToggle3d={() => setShow3dSearch(!show3dSearch)} />
-          } />
+          <Route path="/" element={<MainDashboard />} />
           <Route path="/viewer/:pubmedId" element={<MolstarViewer />} />
         </Routes>
 
@@ -129,5 +178,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

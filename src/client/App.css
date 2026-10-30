@@ -497,7 +497,7 @@ button:disabled,
 .voice-open-btn {
   background: none;
   border: none;
-  padding: 4px 0;
+  padding: 10px;
   cursor: pointer;
   font-weight: 600;
   color: var(--text-primary);
@@ -703,4 +703,46 @@ footer {
 margin-top: var(--space-lg);
 font-size: var(--font-size-xs);
 color: var(--text-secondary);
+}
+/* ==========================================================================
+   9. MOLSTAR VIEWER PORTAL & LAYOUT OVERRIDES 
+   ========================================================================== */
+
+/* 
+   FIX NEW TAB INLINE DRIFT: Force the body tag to organize stacked column rows 
+   instead of a horizontal line if the viewer drops portals directly onto it.
+*/
+body:has(.molstar-app-container) {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  place-items: initial !important;
+  padding: 16px !important;
+}
+
+/* 
+   FIX VISUAL OVERLAP OVER HEADER: Force the ported content wrapper to span 100% 
+   width to isolate itself clean above your Mol* image workspace.
+*/
+.viewer-header-portal-content {
+  width: 100% !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  margin-bottom: 12px !important;
+  flex: 0 0 auto !important;
+}
+
+/* Ensure the wrapper stacks cleanly underneath your search inputs */
+.molstar-app-container {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important;
+  flex: 1 1 auto !important;
+}
+
+/* Overrides inline flex grid drift for child text inputs inside the layout header */
+#header-portal .viewer-header-portal-content .search-bar {
+  display: inline-flex !important;
+  gap: 8px !important;
 }

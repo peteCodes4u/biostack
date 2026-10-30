@@ -101,16 +101,6 @@ const AbstractView = ({ article, onSave, saving }) => {
           </h2>
         )}
         <div className="speech-controls">
-          {hasStructure && (
-            <button
-              className="speech-btn viewer"
-              onClick={handleLaunchViewer}
-              aria-label="Launch 3D Viewer"
-              title="Launch 3D Viewer"
-            >
-              <span className="icon">🧬</span> <span>3D Viewer</span>
-            </button>
-          )}
           {onSave && (
             <button
               className="speech-btn save"
@@ -138,6 +128,16 @@ const AbstractView = ({ article, onSave, saving }) => {
               aria-label="Stop reading"
             >
               <span className="icon">■</span> <span>Stop</span>
+            </button>
+          )}
+           {hasStructure && (
+            <button
+              className="speech-btn viewer"
+              onClick={handleLaunchViewer}
+              aria-label="Launch 3D Viewer"
+              title="Launch 3D Viewer"
+            >
+              <span className="icon">🧬</span> <span>3D Viewer</span>
             </button>
           )}
         </div>
