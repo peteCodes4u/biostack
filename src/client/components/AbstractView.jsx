@@ -3,6 +3,9 @@ import { useNativeSpeech } from '../hooks/useNativeSpeech';
 import { getActiveLanguage } from '../utils/languageDetection';
 import VoiceSettings from '../components/VoiceSettings';
 
+// A single source of truth shared by ALL instances of this component on the page
+let globalActiveVoiceId = null;
+
 /**
  * AbstractView provides a UI for reading scientific abstracts.
  * It integrates with the language detection utility to automatically 
@@ -10,7 +13,6 @@ import VoiceSettings from '../components/VoiceSettings';
  * Now includes a conditional 3D Viewer launch button.
  */
 const AbstractView = ({ article, onSave, saving }) => {
-  // Use 'text' as the prop for the abstract content to match CitationCard's current usage
   const abstractText = article?.abstract || 'No abstract available.';
   const title = article?.title || 'Untitled';
   const pubmedId = article?.pmid;
@@ -21,7 +23,8 @@ const AbstractView = ({ article, onSave, saving }) => {
   // 1. Check for structural data availability ONLY when needed
   useEffect(() => {
     if (pubmedId) {
-      const staggeredDelay = Math.random() * 2000; // 0-2 seconds delay
+      // 0-2 seconds delay to assist with play/stop button synchronization system behavior with user experience.
+      const staggeredDelay = Math.random() * 2000;
       const timer = setTimeout(() => {
         fetch(`/api/structure/${pubmedId}`)
           .then(res => res.json())
@@ -41,17 +44,48 @@ const AbstractView = ({ article, onSave, saving }) => {
 
   // 2. Get the current active language from the Google Translate cookie
   const targetLanguage = getActiveLanguage();
-  
-  // 3. Use the global speech hook with the target language code.
+
+  // 3. Track button layouts using a reactive check against the shared variable
+  const [localIsSpeaking, setLocalIsSpeaking] = useState(false);
   const { speak, stop, isSpeaking } = useNativeSpeech(targetLanguage);
+
+  // Listen for audio channel shifts across all expanded cards
+  useEffect(() => {
+    // If the browser audio track naturally finishes reading on its own, clear global tracking
+    if (!isSpeaking && globalActiveVoiceId === pubmedId) {
+      globalActiveVoiceId = null;
+      window.dispatchEvent(new Event('abstract-speech-sync'));
+    }
+
+    const handleSync = () => {
+      // If the global active ID matches this card, show STOP. If not, force back to PLAY.
+      setLocalIsSpeaking(globalActiveVoiceId === pubmedId);
+    };
+
+    window.addEventListener('abstract-speech-sync', handleSync);
+    return () => window.removeEventListener('abstract-speech-sync', handleSync);
+  }, [isSpeaking, pubmedId]);
 
   const handleSpeak = () => {
     const textToRead = contentRef.current ? contentRef.current.innerText : abstractText;
+    
+    // 1. Synchronously claim the global audio channel across all cards
+    globalActiveVoiceId = pubmedId;
+    
+    // 2. Notify all open instances to instantly re-evaluate their layouts
+    window.dispatchEvent(new Event('abstract-speech-sync'));
+    
+    // 3. Execute the working speech engine
     speak(textToRead);
   };
 
+  const handleStop = () => {
+    globalActiveVoiceId = null;
+    window.dispatchEvent(new Event('abstract-speech-sync'));
+    stop();
+  };
+
   const handleLaunchViewer = () => {
-    // Optimization: Pass the already-fetched data to the new tab via sessionStorage
     if (structureData) {
       sessionStorage.setItem(`structure_${pubmedId}`, JSON.stringify(structureData));
     }
@@ -68,7 +102,7 @@ const AbstractView = ({ article, onSave, saving }) => {
         )}
         <div className="speech-controls">
           {hasStructure && (
-            <button 
+            <button
               className="speech-btn viewer"
               onClick={handleLaunchViewer}
               aria-label="Launch 3D Viewer"
@@ -78,8 +112,8 @@ const AbstractView = ({ article, onSave, saving }) => {
             </button>
           )}
           {onSave && (
-            <button 
-              className="speech-btn save" 
+            <button
+              className="speech-btn save"
               onClick={onSave}
               disabled={saving}
               aria-label="Save to Research Folder"
@@ -88,9 +122,9 @@ const AbstractView = ({ article, onSave, saving }) => {
               <span className="icon">💾</span> <span>{saving ? 'Saving...' : 'Save'}</span>
             </button>
           )}
-          {!isSpeaking ? (
-            <button 
-              className="speech-btn play" 
+          {!localIsSpeaking ? (
+            <button
+              className="speech-btn play"
               onClick={handleSpeak}
               aria-label={`Read abstract in ${targetLanguage}`}
               title={`Read abstract in ${targetLanguage.toUpperCase()}`}
@@ -98,9 +132,9 @@ const AbstractView = ({ article, onSave, saving }) => {
               <span className="icon">▶</span> <span>Play ({targetLanguage.toUpperCase()})</span>
             </button>
           ) : (
-            <button 
-              className="speech-btn stop" 
-              onClick={stop}
+            <button
+              className="speech-btn stop"
+              onClick={handleStop}
               aria-label="Stop reading"
             >
               <span className="icon">■</span> <span>Stop</span>
@@ -108,7 +142,7 @@ const AbstractView = ({ article, onSave, saving }) => {
           )}
         </div>
       </div>
-      <VoiceSettings initialOpen={false}/>
+      <VoiceSettings initialOpen={false} />
       <div className="abstract-body" key={`body-${targetLanguage}`} ref={contentRef}>
         <p><span>{abstractText}</span></p>
       </div>
@@ -123,10 +157,9 @@ const AbstractView = ({ article, onSave, saving }) => {
           margin: 16px 0;
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
           transition: background 0.3s ease, border-color 0.3s ease;
-          /* FIXED: Forces padding calculations to sit strictly inside width boundaries */
           width: 100%;
           box-sizing: border-box;
-          overflow-wrap: break-word; /* Safeguards raw data strings from breaking layout bounds */
+          overflow-wrap: break-word;
         }
 
         .abstract-header {
@@ -167,7 +200,7 @@ const AbstractView = ({ article, onSave, saving }) => {
           transition: opacity 0.2s;
           white-space: nowrap;
           box-sizing: border-box;
-          width: 100%; /* Guarantees uniform button stretching in column layout fields */
+          width: 100%;
         }
 
         .speech-btn.viewer {
@@ -183,6 +216,7 @@ const AbstractView = ({ article, onSave, saving }) => {
         .speech-btn.save {
           background-color: #059669;
           color: white;
+          
         }
 
         .speech-btn.stop {
@@ -208,32 +242,26 @@ const AbstractView = ({ article, onSave, saving }) => {
           align-items: center;
         }
 
-        /* ==========================================================================
-           RESPONSIVE MOBILE BREAKPOINTS
-           ========================================================================== */
         @media (max-width: 600px) {
           .abstract-card {
-            padding: 16px; /* Decreases heavy side gaps to optimize mobile workspace pixels */
+            padding: 16px;
           }
 
           .abstract-header {
-            /* FIXED: Stacks the article title cleanly on top of the speech buttons */
             flex-direction: column;
             align-items: stretch;
             gap: 16px;
           }
 
           .speech-controls {
-            /* FIXED: Reconfigures controls from an rigid column stack into an adaptive row wrap grid */
             flex-direction: row;
-            flex-wrap: wrap; /* Allows actions to wrap gracefully on smaller devices */
+            flex-wrap: wrap;
             width: 100%;
-            min-width: 0;   /* Removes desktop-first rigid minimum bounds constraints */
+            min-width: 0;
             gap: 8px;
           }
 
           .speech-btn {
-            /* Evenly spaces action components across dual rows when wrapped */
             flex: 1 1 calc(50% - 4px);
             min-width: 120px;
           }
@@ -241,7 +269,6 @@ const AbstractView = ({ article, onSave, saving }) => {
 
         @media (max-width: 380px) {
           .speech-btn {
-            /* Forces single button blocks to stretch full wide on compact screens */
             flex: 1 1 100%;
           }
         }
