@@ -215,6 +215,14 @@ export default function MolstarViewer() {
     }
   };
 
+  // Add this small helper inside MolstarViewer to capture form submisson events gracefully
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (searchId.trim() && !loading) {
+      loadStructure(searchId);
+    }
+  };
+
   return (
     <section className="molstar-app-container">
       {createPortal(
@@ -239,21 +247,33 @@ export default function MolstarViewer() {
                 <polyline points="12 19 5 12 12 5"></polyline>
               </svg>
             </button>
-            <div className="search-bar">
+            
+            {/* 
+              Form element wrapper ensures the search bar always mounts immediately.
+              It binds the input to the state and captures Enter key triggers flawlessly.
+            */}
+            <form onSubmit={handleFormSubmit} className="search-bar" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <input 
                 type="text" 
                 value={searchId}
                 onChange={(e) => setSearchId(e.target.value)}
-                placeholder="UniProt Accession (e.g., O88844)"
+                placeholder="UniProt Accession (e.g., O88844, P04637)"
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-color, #cbd5e1)',
+                  background: 'var(--bg-primary, #ffffff)',
+                  color: 'var(--text-primary, #0f172a)'
+                }}
               />
               <button 
-                onClick={() => loadStructure(searchId)} 
+                type="submit" 
                 disabled={loading || !searchId.trim()}
                 className="fetch-btn"
               >
                 {loading ? 'Fetching...' : 'Fetch Structure'}
               </button>
-            </div>
+            </form>
             <p className={`status-text ${status.startsWith('Error') ? 'error' : ''}`}>{status}</p>
           </div>
         </div>,
@@ -266,3 +286,4 @@ export default function MolstarViewer() {
     </section>
   );
 }
+
