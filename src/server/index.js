@@ -106,9 +106,13 @@ router.get('/api/structure/:pubmedId', async (ctx) => {
                     results.structure || 
                     (results.blastDbs && results.blastDbs.length > 0);
 
+    // for results with missing attributes
     if (!hasData) {
-      ctx.status = 404;
-      ctx.body = { error: 'No structural or linkage data found for this PubMed ID' };
+      ctx.status = 200;
+      ctx.body = { 
+        data: [],
+        message: 'No structural or linkage data found for this PubMed ID' 
+      };
       return;
     }
 

@@ -368,6 +368,128 @@ button:disabled,
   color: var(--text-primary);
 }
 
+.abstract-card {
+  background: var(--bg-secondary, #ffffff);
+  color: var(--text-primary, #1a1a1a);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+.abstract-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.abstract-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.speech-controls {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.speech-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.speech-btn.viewer {
+  background-color: #7c3aed;
+  color: white;
+}
+
+.speech-btn.play {
+  background-color: #2563eb;
+  color: white;
+}
+
+.speech-btn.save {
+  background-color: #059669;
+  color: white;
+}
+
+.speech-btn.stop {
+  background-color: #dc2626;
+  color: white;
+}
+
+.speech-btn:hover {
+  opacity: 0.9;
+}
+
+.abstract-body {
+  line-height: 1.6;
+  font-size: 1rem;
+  opacity: 0.9;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.icon {
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .abstract-card {
+    padding: 16px;
+  }
+  .abstract-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .speech-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+    gap: 8px;
+  }
+  .speech-btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 380px) {
+  .speech-btn {
+    flex: 1 1 100%;
+  }
+}
+
+
 /* ==========================================================================
    6. PAGINATION CONTROLS
    ========================================================================== */
