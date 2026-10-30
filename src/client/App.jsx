@@ -56,12 +56,11 @@ function HeaderControls({ show3dSearch, onToggle3d }) {
 function MainDashboard() {
   const [show3dSearch, setShow3dSearch] = useState(false);
   const [isReadyToRender, setIsReadyToRender] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Safely manage structural geometry layout initialization
   const handleToggleViewer = () => {
     if (!show3dSearch) {
       setShow3dSearch(true);
-      // Wait exactly 1 frame pass (50ms) for the browser to render the wrapper container dimensions
       setTimeout(() => {
         setIsReadyToRender(true);
       }, 50);
@@ -77,50 +76,63 @@ function MainDashboard() {
         <VoiceSettings initialOpen={false}/>
       </div>
       
-      <div style={{ margin: '20px 0', textAlign: 'left' }}>
-        <button
-          className="search-3d-global-btn"
-          onClick={handleToggleViewer}
-          style={{
-            padding: '10px 18px',
-            backgroundColor: show3dSearch ? '#dc2626' : '#7c3aed',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            fontSize: '0.9rem',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <span>{show3dSearch ? '❌ Close 3D Search' : '🧬 Search 3D structures'}</span>
-        </button>
-
+      <div style={{ margin: '12px 0', textAlign: 'left' }}>
+        {/* 
+          MODIFIED GLOBAL TRIGGER BUTTON: 
+          Now matches the exact transparent system behavior of .voice-open-btn,
+          only revealing a background highlight layer when your cursor triggers a hover.
+        */}
+<button
+  className="search-3d-global-btn"
+  onClick={handleToggleViewer}
+  onMouseEnter={() => setIsHovered(true)}
+  onMouseLeave={() => setIsHovered(false)}
+  style={{
+    padding: '4px 8px',
+    // Stays fully transparent by default, reveals purple (#7c3aed) on hover, or red if closing
+    background: isHovered 
+      ? (show3dSearch ? 'var(--danger-bg, #fdf2f2)' : '#7c3aed') 
+      : 'transparent',
+    // Switches text to white on hover so the purple is perfectly scannable/readable
+    color: isHovered
+      ? '#ffffff'
+      : (show3dSearch ? 'var(--danger-color, #c92a2a)' : 'var(--text-primary, #1c1a17)'),
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: 'var(--font-size-base, 1rem)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    transition: 'background-color 0.2s ease, color 0.2s ease',
+    minHeight: 'auto'
+  }}
+>
+  <span>{show3dSearch ? '❌ Close 3D Search' : '🧬 Search 3D structures'}</span>
+</button>
         {show3dSearch && (
           <div 
             className="inline-molstar-viewport"
             style={{
               marginTop: '16px',
-              border: '1px solid var(--border-color, #e5e7eb)',
+              border: '1px solid var(--border-color, #e5dfd3)',
               borderRadius: '12px',
               height: '550px',
-              width: '100%',         // Guarantees layout dimensions exist before initialization
+              width: '100%',
               minWidth: '320px',
               position: 'relative',
               overflow: 'hidden',
-              backgroundColor: 'var(--bg-secondary, #ffffff)'
+              backgroundColor: 'var(--bg-secondary, #f4f1eb)'
             }}
           >
-            {/* 
-              By conditionally delaying the viewer initialization, the parent container 
-              is guaranteed to have its full height and width metrics available, 
-              forcing the 3D canvas to scale up and become visible immediately.
-            */}
-            {isReadyToRender ? <MolstarViewer /> : <div style={{ padding: '20px', color: 'var(--text-secondary)' }}>Initializing 3D Viewport...</div>}
+            {isReadyToRender ? (
+              <MolstarViewer />
+            ) : (
+              <div style={{ padding: '20px', color: 'var(--text-secondary)' }}>
+                Initializing 3D Viewport...
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -131,6 +143,7 @@ function MainDashboard() {
     </main>
   );
 }
+
 
 
 function App() {

@@ -504,6 +504,10 @@ button:disabled,
   transition: none !important;
 }
 
+.voice-open-btn:hover {
+  color: #ffffff !important;
+}
+
 .search-pane {
   width: 100%;
   max-width: 100%;
