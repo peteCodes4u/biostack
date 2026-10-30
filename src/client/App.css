@@ -17,16 +17,20 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* Light Mode Variables */
-  --bg-primary: #fcfbf9;     /* Soft paper off-white (drastically cuts glare) */
-  --bg-secondary: #f4f1eb;   /* Slightly deeper warm cream for panels/sidebars */
-  --text-primary: #1c1a17;   /* Soft charcoal (easier on eyes than pure dark slate) */
-  --text-secondary: #5c5850; /* Compliant mid-tone grey for secondary text (4.6:1 contrast) */
-  --border-color: #e5dfd3;   /* Soft organic border separation line */
-  --accent-color: #1d61d6;   /* Accessible, deeper eye-friendly medical blue */
-  --accent-hover: #134db3;   /* High-contrast hover blue */
-  --danger-color: #c92a2a;   /* Deeper accessible warning red */
-  --danger-bg: #fdf2f2;      /* Soft tinted light alert surface */
-  --danger-border: #f8b4b4;  /* Muted red boundary outline */
+  --bg-primary: #fcfbf9;
+  /* Soft paper off-white (drastically cuts glare) */
+  --bg-secondary: #f4f1eb;
+  /* Slightly deeper warm cream for panels/sidebars */
+  --text-primary: #1c1a17;
+  /* Soft charcoal (easier on eyes than pure dark slate) */
+  --text-secondary: #5c5850;
+  /* Compliant mid-tone grey for secondary text (4.6:1 contrast) */
+  --border-color: #e5dfd3;
+  --accent-color: #1d61d6;
+  --accent-hover: #134db3;
+  --danger-color: #c92a2a;
+  --danger-bg: #fdf2f2;
+  --danger-border: #f8b4b4;
 }
 
 [data-theme='dark'] {
@@ -445,6 +449,11 @@ button:disabled,
   overflow-x: hidden !important;
 }
 
+.main-addl-tools {
+  display: flex;
+  flex-direction: column;
+}
+
 .voice-pane {
   width: 100%;
   max-width: 100%;
@@ -457,7 +466,7 @@ button:disabled,
   padding: 24px 20px 20px 20px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: var(--bg-primary); 
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
@@ -499,13 +508,43 @@ button:disabled,
   border: none;
   padding: 10px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 200;
+  font-Size: var(--font-size-base, 1rem);
   color: var(--text-primary);
   transition: none !important;
 }
 
 .voice-open-btn:hover {
   color: #ffffff !important;
+}
+
+.search-3d-global-btn {
+  padding: 10px;
+  background: transparent;
+  color: var(--text-primary, #1c1a17);
+  border: none;
+  cursor: pointer;
+  font-weight: 200;
+  font-size: var(--font-size-base, 1rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  min-height: auto;
+}
+
+.search-3d-global-btn:not(.is-active):hover {
+  background-color: #7c3aed;
+  color: #ffffff;
+}
+
+.search-3d-global-btn.is-active {
+  color: var(--danger-color, #c92a2a);
+}
+
+.search-3d-global-btn.is-active:hover {
+  background-color: var(--danger-bg, #fdf2f2);
+  color: #ffffff;
 }
 
 .search-pane {
@@ -517,7 +556,7 @@ button:disabled,
 .pubmed-search-container {
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* Forces form children to span edge-to-edge horizontally */
+  align-items: stretch;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -528,10 +567,6 @@ button:disabled,
   margin-bottom: 12px;
 }
 
-/* 
-   FIXED SEARCH FORM: Stays on a single line row while dynamically 
-   stretching the text box to take up all empty horizontal viewport body width.
-*/
 .pubmed-inline-form {
   display: flex;
   align-items: center;
@@ -543,12 +578,11 @@ button:disabled,
   margin-bottom: 20px;
 }
 
-/* FIXED TEXT BOX: Overrides global 300px clamp restrictions, spanning edge-to-edge */
 .pubmed-inline-form input.flex-grow {
-  flex: 1 1 auto;      /* Automatically consumes 100% of left-over row dimensions */
+  flex: 1 1 auto;
   width: 100%;
-  max-width: none !important; /* FIXED: Destroys old legacy 300px restrictions from section 3 */
-  min-width: 0;        /* Allows inputs to scale and resize down cleanly on phones */
+  max-width: none !important;
+  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -558,8 +592,8 @@ button:disabled,
 
 .pubmed-inline-form button.btn-primary,
 .pubmed-inline-form button.btn-danger {
-  flex: 0 0 auto;       /* Prevents buttons from squishing or altering dimensions */
-  white-space: nowrap;  /* Prevents search button text strings from breaking into two rows */
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .mesh-suggester-toggle-container {
@@ -575,7 +609,7 @@ button:disabled,
   cursor: pointer;
   font-weight: 600;
   color: var(--text-primary);
-  transition: none !important; 
+  transition: none !important;
 }
 
 .mesh-suggester {
@@ -586,7 +620,7 @@ button:disabled,
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
   border: 1px solid var(--border-color);
-  background-color: var(--bg-primary); 
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -696,26 +730,24 @@ button:disabled,
 8. LEGACY OUTSIDE FRAMEBREAK MEDIA BREAKPOINTS
 ========================================================================== */
 @media (max-width: 900px) {
-.main-dashboard {
-flex-direction: column;
+  .main-dashboard {
+    flex-direction: column;
+  }
+
+  .voice-pane {
+    width: 100%;
+  }
 }
-.voice-pane {
-width: 100%;
-}
-}
+
 footer {
-margin-top: var(--space-lg);
-font-size: var(--font-size-xs);
-color: var(--text-secondary);
+  margin-top: var(--space-lg);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
 }
+
 /* ==========================================================================
    9. MOLSTAR VIEWER PORTAL & LAYOUT OVERRIDES 
    ========================================================================== */
-
-/* 
-   FIX NEW TAB INLINE DRIFT: Force the body tag to organize stacked column rows 
-   instead of a horizontal line if the viewer drops portals directly onto it.
-*/
 body:has(.molstar-app-container) {
   flex-direction: column !important;
   align-items: stretch !important;
@@ -723,10 +755,6 @@ body:has(.molstar-app-container) {
   padding: 16px !important;
 }
 
-/* 
-   FIX VISUAL OVERLAP OVER HEADER: Force the ported content wrapper to span 100% 
-   width to isolate itself clean above your Mol* image workspace.
-*/
 .viewer-header-portal-content {
   width: 100% !important;
   display: block !important;
@@ -735,7 +763,6 @@ body:has(.molstar-app-container) {
   flex: 0 0 auto !important;
 }
 
-/* Ensure the wrapper stacks cleanly underneath your search inputs */
 .molstar-app-container {
   display: flex !important;
   flex-direction: column !important;
@@ -745,7 +772,6 @@ body:has(.molstar-app-container) {
   flex: 1 1 auto !important;
 }
 
-/* Overrides inline flex grid drift for child text inputs inside the layout header */
 #header-portal .viewer-header-portal-content .search-bar {
   display: inline-flex !important;
   gap: 8px !important;

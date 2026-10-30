@@ -56,7 +56,6 @@ function HeaderControls({ show3dSearch, onToggle3d }) {
 function MainDashboard() {
   const [show3dSearch, setShow3dSearch] = useState(false);
   const [isReadyToRender, setIsReadyToRender] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleToggleViewer = () => {
     if (!show3dSearch) {
@@ -72,59 +71,24 @@ function MainDashboard() {
 
   return (
     <main className="main-dashboard">
-      <div className="voice-pane">
-        <VoiceSettings initialOpen={false}/>
+      <div className="search-pane">
+        <PubmedSearch />
       </div>
-      
-      <div style={{ margin: '12px 0', textAlign: 'left' }}>
-        {/* 
-          MODIFIED GLOBAL TRIGGER BUTTON: 
-          Now matches the exact transparent system behavior of .voice-open-btn,
-          only revealing a background highlight layer when your cursor triggers a hover.
-        */}
-<button
-  className="search-3d-global-btn"
-  onClick={handleToggleViewer}
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
-  style={{
-    padding: '4px 8px',
-    // Stays fully transparent by default, reveals purple (#7c3aed) on hover, or red if closing
-    background: isHovered 
-      ? (show3dSearch ? 'var(--danger-bg, #fdf2f2)' : '#7c3aed') 
-      : 'transparent',
-    // Switches text to white on hover so the purple is perfectly scannable/readable
-    color: isHovered
-      ? '#ffffff'
-      : (show3dSearch ? 'var(--danger-color, #c92a2a)' : 'var(--text-primary, #1c1a17)'),
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontWeight: '600',
-    fontSize: 'var(--font-size-base, 1rem)',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'background-color 0.2s ease, color 0.2s ease',
-    minHeight: 'auto'
-  }}
->
-  <span>{show3dSearch ? '❌ Close 3D Search' : '🧬 Search 3D structures'}</span>
-</button>
+      <section className="main-addl-tools">
+      <div className="voice-pane">
+        <VoiceSettings initialOpen={false} />
+      </div>
+
+      <div className='search-3d-global' style={{ margin: '12px 0', textAlign: 'left' }}>
+        <button
+          className="search-3d-global-btn"
+          onClick={handleToggleViewer}
+        >
+          <span>{show3dSearch ? '❌ Close 3D Search' : '🧬 Search 3D structures'}</span>
+        </button>
         {show3dSearch && (
-          <div 
+          <div
             className="inline-molstar-viewport"
-            style={{
-              marginTop: '16px',
-              border: '1px solid var(--border-color, #e5dfd3)',
-              borderRadius: '12px',
-              height: '550px',
-              width: '100%',
-              minWidth: '320px',
-              position: 'relative',
-              overflow: 'hidden',
-              backgroundColor: 'var(--bg-secondary, #f4f1eb)'
-            }}
           >
             {isReadyToRender ? (
               <MolstarViewer />
@@ -136,15 +100,10 @@ function MainDashboard() {
           </div>
         )}
       </div>
-
-      <div className="search-pane">
-        <PubmedSearch />
-      </div>
+      </section>
     </main>
   );
 }
-
-
 
 function App() {
   const { theme, toggleTheme } = useTheme();
