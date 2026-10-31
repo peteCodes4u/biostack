@@ -193,18 +193,24 @@ router.post('/api/pubmed/search', async (ctx) => {
       return;
     }
 
-    const articles = (fetchedData.articles || []).map(a => ({
-      pmid: a.pmid,
-      title: a.title,
-      authors: Array.isArray(a.authors) 
-        ? a.authors.map(author => `${author.firstName || ''} ${author.lastName || ''}`.trim()) 
-        : [],
-      journal: a.journalInfo?.title || 'Unknown Journal',
-      pubDate: a.journalInfo?.publicationDate 
-        ? `${a.journalInfo.publicationDate.year || ''} ${a.journalInfo.publicationDate.month || ''}`.trim() 
-        : 'Unknown Date',
-      abstract: a.abstractText || 'No abstract available.'
-    }));
+const articles = (fetchedData.articles || []).map(a => ({
+  pmid: a.pmid,
+  title: a.title,
+  authors: Array.isArray(a.authors) 
+    ? a.authors.map(author => `${author.firstName || ''} ${author.lastName || ''}`.trim()) 
+    : [],
+  journal: a.journalInfo?.title || 'Unknown Journal',
+  pubDate: a.journalInfo?.publicationDate 
+    ? `${a.journalInfo.publicationDate.year || ''} ${a.journalInfo.publicationDate.month || ''}`.trim() 
+    : 'Unknown Date',
+  abstract: a.abstractText || 'No abstract available.',
+  
+  // FIXED SEED FLAG: Direct, explicitly available boolean string key passed to the component
+  is3DViewerEligible: true
+}));
+
+
+
 
     ctx.body = { 
       success: true, 
@@ -245,18 +251,24 @@ router.post('/api/pubmed/fetch', async (ctx) => {
       return;
     }
 
-    const articles = (fetchedData.articles || []).map(a => ({
-      pmid: a.pmid,
-      title: a.title,
-      authors: Array.isArray(a.authors) 
-        ? a.authors.map(author => `${author.firstName || ''} ${author.lastName || ''}`.trim()) 
-        : [],
-      journal: a.journalInfo?.title || 'Unknown Journal',
-      pubDate: a.journalInfo?.publicationDate 
-        ? `${a.journalInfo.publicationDate.year || ''} ${a.journalInfo.publicationDate.month || ''}`.trim() 
-        : 'Unknown Date',
-      abstract: a.abstractText || 'No abstract available.'
-    }));
+const articles = (fetchedData.articles || []).map(a => ({
+  pmid: a.pmid,
+  title: a.title,
+  authors: Array.isArray(a.authors) 
+    ? a.authors.map(author => `${author.firstName || ''} ${author.lastName || ''}`.trim()) 
+    : [],
+  journal: a.journalInfo?.title || 'Unknown Journal',
+  pubDate: a.journalInfo?.publicationDate 
+    ? `${a.journalInfo.publicationDate.year || ''} ${a.journalInfo.publicationDate.month || ''}`.trim() 
+    : 'Unknown Date',
+  abstract: a.abstractText || 'No abstract available.',
+  
+  // FIXED SEED FLAG: Direct, explicitly available boolean string key passed to the component
+  is3DViewerEligible: true
+}));
+
+
+
 
     ctx.body = { success: true, data: articles };
 

@@ -18,13 +18,10 @@
 
   /* Light Mode Variables */
   --bg-primary: #fcfbf9;
-  /* Soft paper off-white (drastically cuts glare) */
   --bg-secondary: #f4f1eb;
-  /* Slightly deeper warm cream for panels/sidebars */
+  --bg-tertiary: #eae5db;
   --text-primary: #1c1a17;
-  /* Soft charcoal (easier on eyes than pure dark slate) */
   --text-secondary: #5c5850;
-  /* Compliant mid-tone grey for secondary text (4.6:1 contrast) */
   --border-color: #e5dfd3;
   --accent-color: #1d61d6;
   --accent-hover: #134db3;
@@ -36,6 +33,7 @@
 [data-theme='dark'] {
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --border-color: #334155;
@@ -588,7 +586,7 @@ button:disabled,
   padding: 24px 20px 20px 20px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-tertiary);
   color: var(--text-primary);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
